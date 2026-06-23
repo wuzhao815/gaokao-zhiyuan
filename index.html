@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="梧昭高考查询 - 权威高考志愿填报服务平台，提供1356所高校信息、智能AI志愿推荐、历年分数线查询、院校专业对比，助力2026高考生科学填报志愿，数据来源教育部阳光高考平台" />
+  <meta name="keywords" content="高考,志愿填报,高校排名,分数线,专业选择,模拟填报,2026高考,江西高考,新高考,3+1+2,3+3,大学排名,专业推荐" />
+  <meta name="author" content="梧昭高考查询" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="梧昭高考查询 · 高考志愿填报服务平台" />
+  <meta property="og:description" content="权威高考志愿填报服务平台，智能AI推荐，助力科学填报志愿" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://wzgaokao-zhiyuan.xyz" />
+  <link rel="canonical" href="https://wzgaokao-zhiyuan.xyz" />
+  <title>梧昭高考查询 · 2026高考志愿填报服务平台</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231a56db'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='white'>志</text></svg>" />
+</head>
+<body>
+  
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ===== Top Bar ===== -->
+  <div class="gov-topbar">
+    <div class="gov-topbar-inner">
+      <div class="gov-badge">国家教育部阳光高考信息服务平台 · 官方数据来源</div>
+      <div>
+        <span id="current-date"></span>
+        <a href="https://gaokao.chsi.com.cn" target="_blank">阳光高考官网</a>
+        <a href="https://www.moe.gov.cn" target="_blank">教育部官网</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="javascript:void(0)" class="logo" onclick="navigateTo('home')">
+        <div class="logo-icon">梧</div>
+        <div class="logo-text">
+          <span class="logo-title">梧昭高考查询</span>
+          <span class="logo-sub">高考信息查询平台</span>
+        </div>
+      </a>
+
+      <nav class="main-nav">
+        <button class="nav-item active" data-page="home">🏠 首页</button>
+        <button class="nav-item" data-page="colleges">🎓 高校大全</button>
+        <button class="nav-item" data-page="rankings">🏆 排行榜</button>
+        <button class="nav-item" data-page="majors">📚 专业目录</button>
+        <button class="nav-item" data-page="simulate">🎯 模拟填报</button>
+        <button class="nav-item" data-page="scoreline">📊 分数线</button>
+        <button class="nav-item" data-page="compare">⚖️ 院校对比</button>
+        <button class="nav-item" data-page="jxsimulate">🍁 江西45志愿</button>
+        <button class="nav-item" data-page="news">📰 高考资讯</button>
+        <button class="nav-item" data-page="verify">🔍 信息验证</button>
+        <button class="nav-item" data-page="chart">📈 数据图表</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Main Content ===== -->
+  <main class="app-content">
+
+    <!-- ==================== HOME ==================== -->
+    <section id="section-home" class="section active">
+      
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-title">🎓 梧昭高考查询 · 高考志愿填报服务平台</div>
+        <div class="hero-sub">1356所本科高校 · 8000+专业数据 · 智能AI推荐 · 助力科学选择未来</div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">1356</div>
+            <div class="hero-stat-label">收录高校</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">8000+</div>
+            <div class="hero-stat-label">专业数据</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">30万+</div>
+            <div class="hero-stat-label">历年分数线</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">国家级</div>
+            <div class="hero-stat-label">权威数据来源</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Entries -->
+      <div class="quick-entries">
+        <div class="quick-entry" onclick="navigateTo('colleges')">
+          <div class="quick-entry-icon">🏫</div>
+          <div class="quick-entry-label">高校大全</div>
+        </div>
+
+        <div class="quick-entry" onclick="navigateTo('simulate')">
+          <div class="quick-entry-icon">🎯</div>
+          <div class="quick-entry-label">模拟填报</div>
+        </div>
+        <div class="quick-entry" onclick="navigateTo('scoreline')">
+          <div class="quick-entry-icon">📊</div>
+          <div class="quick-entry-label">查分数线</div>
+        </div>
+        <div class="quick-entry" onclick="navigateTo('rankings')">
+          <div class="quick-entry-icon">🏆</div>
+          <div class="quick-entry-label">高校排名</div>
+        </div>
+        <div class="quick-entry" onclick="navigateTo('compare')">
+          <div class="quick-entry-icon">⚖️</div>
+          <div class="quick-entry-label">院校对比</div>
+        </div>
+        <div class="quick-entry" onclick="navigateTo('jxsimulate')">
+          <div class="quick-entry-icon">🍁</div>
+          <div class="quick-entry-label">江西45志愿</div>
+        </div>
+        <div class="quick-entry" onclick="navigateTo('news')">
+          <div class="quick-entry-icon">📰</div>
+          <div class="quick-entry-label">高考资讯</div>
+        </div>
+      </div>
+
+      <!-- Rankings Section -->
+      <div class="section-header">
+        <h2 class="section-title">🏆 高校排行榜 <span class="badge">TOP 8</span></h2>
+        <span class="section-more" onclick="navigateTo('rankings')">查看全部 →</span>
+      </div>
+      <div id="home-rankings" class="card-grid col-4"></div>
+
+      <!-- Expert Tips Section -->
+      <div id="home-expert-tips" style="margin-top:28px;"></div>
+
+      <!-- News Section -->
+      <div class="section-header" style="margin-top:28px;">
+        <h2 class="section-title">📰 最新高考资讯</h2>
+        <span class="section-more" onclick="navigateTo('news')">查看全部 →</span>
+      </div>
+      <div id="home-news" class="card-grid col-3"></div>
+
+      <!-- Major Categories -->
+      <div class="section-header" style="margin-top:28px;">
+        <h2 class="section-title">📚 专业大类</h2>
+        <span class="section-more" onclick="navigateTo('majors')">查看全部 →</span>
+      </div>
+      <div id="home-majors" class="card-grid" style="grid-template-columns:repeat(6,1fr);"></div>
+
+      <!-- Employment -->
+      <div class="section-header" style="margin-top:28px;">
+        <h2 class="section-title">💼 热门专业就业数据</h2>
+      </div>
+      <div id="home-employment" class="card-grid col-2"></div>
+
+      <!-- Local AI Health -->
+      <div id="home-ai-health"></div>
+      
+      <!-- Interest Test -->
+      <div id="home-interest-test"></div>
+    </section>
+
+    <!-- ==================== COLLEGES ==================== -->
+    <section id="section-colleges" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🎓 高校大全 <span class="badge">全国高校信息查询</span></h2>
+      </div>
+      
+      <div class="filter-bar">
+        <select id="college-type-filter" class="form-select" onchange="renderCollegeList()">
+          <option value="">全部类型</option>
+        </select>
+        <select id="college-loc-filter" class="form-select" onchange="renderCollegeList()">
+          <option value="">全部地区</option>
+        </select>
+        <div class="header-search" style="flex:1;min-width:200px;">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="college-search" placeholder="搜索高校/城市/类型（如 985、北京、理工…）" oninput="renderCollegeList()" />
+        </div>
+      </div>
+      
+      <div id="college-count" class="result-count"></div>
+      <div id="college-grid" class="card-grid"></div>
+    </section>
+
+    <!-- ==================== RANKINGS ==================== -->
+    <section id="section-rankings" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🏆 高校排行榜 <span class="badge">综合评分排名</span></h2>
+      </div>
+      <div class="filter-bar">
+        <span style="font-size:13px;color:var(--text-muted);">基于综合办学实力、学术水平、社会声誉等多维度评估</span>
+      </div>
+      <div id="rankings-count" class="result-count"></div>
+      <div id="rankings-grid" class="card-grid"></div>
+    </section>
+
+    <!-- ==================== MAJORS ==================== -->
+    <section id="section-majors" class="section">
+      <div class="section-header">
+        <h2 class="section-title">📚 专业目录 <span class="badge">专业大类导航</span></h2>
+      </div>
+      
+      <div class="card-grid col-4" id="majors-grid"></div>
+      
+      <div class="section-header" style="margin-top:28px;">
+        <h2 class="section-title">💼 热门专业就业前景</h2>
+      </div>
+      <div class="card-grid col-2" id="majors-employment"></div>
+      
+      <div style="margin-top:20px;padding:16px;background:var(--primary-light);border-radius:var(--radius);font-size:14px;color:var(--text-secondary);">
+        <strong>📌 专业选择建议：</strong><br/>
+        1. 结合个人兴趣和学科特长选择专业方向<br/>
+        2. 了解专业的就业前景和发展趋势<br/>
+        3. 参考高校的专业实力和学科评估结果<br/>
+        4. 关注新兴交叉学科和战略性新兴产业相关专业<br/>
+        5. 数据来源：教育部学科评估、阳光高考平台
+      </div>
+    </section>
+
+    <!-- ==================== SCORE LINE ==================== -->
+    <section id="section-scoreline" class="section">
+      <div class="section-header">
+        <h2 class="section-title">📊 历年分数线查询 <span class="badge">权威数据参考</span></h2>
+      </div>
+      
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;">
+        <div class="filter-bar">
+          <div style="flex:1;min-width:180px;">
+            <label class="form-label">高校名称</label>
+            <input type="text" id="sl-college" class="form-input" placeholder="如：清华大学" list="college-list" />
+            <datalist id="college-list"></datalist>
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <label class="form-label">省份</label>
+            <select id="sl-province" class="form-select"></select>
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <label class="form-label">科类</label>
+            <select id="sl-subject" class="form-select">
+              <option value="物理类">物理类</option>
+              <option value="历史类">历史类</option>
+              <option value="综合">综合</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn btn-primary" onclick="queryScoreLine()" style="height:42px;">🔍 查询分数线</button>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:16px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+          <h3 style="font-size:16px;margin-bottom:12px;">📊 分数位次换算</h3>
+          <p style="font-size:13px;color:#64748b;margin-bottom:12px;">输入分数，估算对应全省位次（基于2025年江西省一分一段表）</p>
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <input type="number" id="rank-convert-score" placeholder="输入高考分数" style="width:150px;height:36px;border:1px solid #e2e8f0;border-radius:8px;padding:0 12px;font-size:14px;">
+            <select id="rank-convert-subject" style="height:36px;border:1px solid #e2e8f0;border-radius:8px;padding:0 12px;font-size:14px;">
+              <option value="wuli">物理类</option>
+              <option value="lishi">历史类</option>
+            </select>
+            <button onclick="doRankConvert()" style="height:36px;padding:0 20px;background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">换算位次</button>
+          </div>
+          <div id="rank-convert-result" style="margin-top:12px;font-size:14px;"></div>
+        </div>
+      </div>
+      
+      <div id="sl-result"></div>
+    </section>
+
+    <!-- ==================== SIMULATE ==================== -->
+    <section id="section-simulate" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🎯 模拟志愿填报 <span class="badge">智能推荐</span></h2>
+      </div>
+
+      <div style="padding:16px;background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:var(--radius);margin-bottom:20px;font-size:14px;color:var(--warning-text);">
+        ⚠️ 本系统模拟数据仅供参考，正式填报志愿请以各省教育考试院官方公布的招生计划为准。
+      </div>
+
+      <!-- ===== 个人信息调查问卷（通用版） ===== -->
+      <div id="sim-survey-container" style="margin-bottom:24px;">
+        <!-- 问卷未完成时的展开状态 -->
+        <div id="sim-survey-active" style="display:none;">
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+            <!-- 问卷头部 -->
+            <div style="background:linear-gradient(135deg,#1a56db,#2563eb);padding:20px 24px;color:#fff;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h3 style="font-size:18px;font-weight:700;margin:0;">📋 个人信息调查问卷</h3>
+                <button onclick="simSurveySkip()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:6px 16px;border-radius:6px;font-size:13px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">跳过，直接填报</button>
+              </div>
+              <p style="font-size:13px;opacity:0.9;margin:0 0 12px 0;">参考张雪峰等知名填报专家的提问话术，帮你更好地了解自己的需求，让AI推荐更精准</p>
+              <!-- 进度条 -->
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="flex:1;height:6px;background:rgba(255,255,255,0.2);border-radius:3px;overflow:hidden;">
+                  <div id="sim-survey-progress-bar" style="height:100%;background:#fff;border-radius:3px;transition:width 0.4s ease;width:25%;"></div>
+                </div>
+                <span id="sim-survey-progress-text" style="font-size:12px;opacity:0.85;">1 / 4</span>
+              </div>
+            </div>
+            <!-- 问卷步骤区域 -->
+            <div id="sim-survey-steps" style="padding:24px;min-height:260px;position:relative;">
+              <!-- 步骤内容由JS动态渲染 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 问卷完成后的折叠状态 -->
+        <div id="sim-survey-done" style="display:none;">
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#166534;">
+              <span style="font-size:18px;">✅</span>
+              <span>问卷已完成 · <strong id="sim-survey-summary-text"></strong></span>
+            </div>
+            <button onclick="simSurveyReset()" style="background:#dcfce7;border:1px solid #86efac;color:#166534;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#bbf7d0'" onmouseout="this.style.background='#dcfce7'">🔄 重新评估</button>
+          </div>
+          <!-- 完成后的建议展示 -->
+          <div id="sim-survey-advice" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <div class="simulate-container">
+        <div class="jx-header"><h2>📊 志愿填报模拟</h2><p>根据你的高考分数、位次和兴趣方向，AI智能推荐冲稳保三层志愿方案。支持全国各省份新高考/传统高考模式。</p></div>
+        <div class="jx-form-card">
+          <div class="form-row">
+            <div class="form-group" style="flex:1"><label class="form-label">📐 高考分数</label><input type="number" id="sim-score" class="form-input" placeholder="0-750分" min="0" max="750"></div>
+            <div class="form-group" style="flex:1"><label class="form-label">📊 全省位次</label><input type="number" id="sim-rank" class="form-input" placeholder="如 5000" min="1"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1"><label class="form-label">🏫 科类</label><select id="sim-subject" class="form-select"><option value="物理类">💡 物理类</option><option value="历史类">📜 历史类</option><option value="综合">📋 综合</option></select></div>
+            <div class="form-group" style="flex:1"><label class="form-label">📍 所在省份</label><select id="sim-province" class="form-select"></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1"><label class="form-label">📅 批次</label><select id="sim-batch" class="form-select"><option value="本科批">🎓 本科批</option><option value="高职专科批">📚 高职专科批</option></select></div>
+            <div class="form-group" style="flex:1"><label class="form-label">📋 志愿数量</label><select id="sim-count" class="form-select"><option value="45">45个志愿（如江西）</option><option value="96">96个志愿（如河南）</option><option value="80">80个志愿（如河北）</option><option value="6">6个志愿（传统高考）</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">🧠 兴趣方向 <span style="color:var(--text-muted);font-weight:400;font-size:12px;">可选，用于优化专业推荐</span></label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;" id="sim-interest-container"></div>
+          </div>
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:13px;color:#1e40af;margin-top:8px;">
+            ℹ️ 系统将根据分数位次和所选省份志愿数量，按<strong>冲-稳-保</strong>梯度智能推荐，模拟分数线基于全国1356所高校历年数据估算。
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="simDoRecommend()" style="width:100%;margin-top:12px;font-size:16px;padding:14px;">🤖 开始AI智能推荐</button>
+        </div>
+        <div id="sim-result" style="margin-top:24px;"></div>
+      </div>
+    </section>
+
+    <!-- ==================== COMPARE ==================== -->
+    <section id="section-compare" class="section">
+      <div class="section-header">
+        <h2 class="section-title">⚖️ 院校对比 <span class="badge">多维度对比</span></h2>
+      </div>
+      
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;">
+        <div class="filter-bar" style="margin-bottom:16px;">
+          <div style="flex:1;min-width:180px;">
+            <label class="form-label">高校 A</label>
+            <select id="compare-select-1" class="form-select" onchange="doCompare()"></select>
+          </div>
+          <div style="display:flex;align-items:flex-end;padding:0 8px;">
+            <span style="font-size:20px;color:var(--text-muted);">VS</span>
+          </div>
+          <div style="flex:1;min-width:180px;">
+            <label class="form-label">高校 B</label>
+            <select id="compare-select-2" class="form-select" onchange="doCompare()"></select>
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn btn-primary" onclick="doCompare()" style="height:42px;">⚖️ 开始对比</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);">💡 提示：也可以点击下方高校列表直接添加对比</div>
+      </div>
+      
+      <div class="compare-container" id="compare-result">
+        <div class="compare-col" id="compare-col-1">
+          <div class="compare-col-title" style="color:var(--text-muted);font-weight:400;">
+            👈 请选择高校 A
+          </div>
+        </div>
+        <div class="compare-col" id="compare-col-2">
+          <div class="compare-col-title" style="color:var(--text-muted);font-weight:400;">
+            👉 请选择高校 B
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick select -->
+      <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <h4 style="font-size:14px;margin-bottom:8px;color:var(--text-secondary);">快速选择高校 A</h4>
+          <div id="compare-list-1"></div>
+        </div>
+        <div>
+          <h4 style="font-size:14px;margin-bottom:8px;color:var(--text-secondary);">快速选择高校 B</h4>
+          <div id="compare-list-2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== NEWS ==================== -->
+    <section id="section-news" class="section">
+      <div class="section-header">
+        <h2 class="section-title">📰 高考资讯 <span class="badge">最新政策动态</span></h2>
+      </div>
+      
+      <div id="news-count" class="result-count"></div>
+      <div id="news-grid" class="card-grid"></div>
+      
+      <div style="margin-top:16px;padding:14px;background:var(--bg);border-radius:var(--radius);font-size:13px;color:var(--text-muted);">
+        📢 资讯来源：教育部官网、阳光高考平台、各省教育考试院。信息仅供参考，以官方发布为准。
+      </div>
+    </section>
+
+
+    <!-- ==================== VERIFY ==================== -->
+    <section id="section-verify" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🔍 考试信息验证 <span class="badge">官方数据对照</span></h2>
+      </div>
+      
+      <!-- 验证三合一 Tab -->
+      <div class="verify-tabs">
+        <button class="verify-tab active" data-vtab="score">📊 成绩验证</button>
+        <button class="verify-tab" data-vtab="admit">🎫 录取查询</button>
+        <button class="verify-tab" data-vtab="compare">📋 分数对照</button>
+      </div>
+      
+      <!-- Tab 1: 成绩验证 -->
+      <div class="verify-panel active" id="vpanel-score">
+        <div class="verify-form-card">
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">📐 高考分数</label>
+              <input type="number" id="vf-score" class="form-input" placeholder="输入高考分数（0-750）" min="0" max="750">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">🗺️ 省份</label>
+              <select id="vf-province" class="form-select">
+                <option value="">选择省份</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">📚 科类</label>
+              <select id="vf-subject" class="form-select">
+                <option value="物理类">物理类</option>
+                <option value="历史类">历史类</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">📅 年份</label>
+              <select id="vf-year" class="form-select">
+                <option value="2025">2025年</option>
+                <option value="2024">2024年</option>
+                <option value="2023">2023年</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" onclick="doScoreVerify()" style="margin-top:8px;">
+            🔍 开始验证
+          </button>
+          <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
+            💡 验证您的成绩在所选年份、省份、科类下可报考的高校层次
+          </div>
+        </div>
+        <div id="vf-score-result" style="margin-top:16px;"></div>
+      </div>
+      
+      <!-- Tab 2: 录取查询 -->
+      <div class="verify-panel" id="vpanel-admit">
+        <div class="verify-form-card">
+          <div class="form-row">
+            <div class="form-group" style="flex:2;">
+              <label class="form-label">🏫 院校名称</label>
+              <input type="text" id="vf-college" class="form-input" placeholder="输入院校名称（如 清华大学）">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">📅 年份</label>
+              <select id="vf-admit-year" class="form-select">
+                <option value="2025">2025年</option>
+                <option value="2024">2024年</option>
+                <option value="2023">2023年</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" onclick="doAdmitQuery()" style="margin-top:8px;">
+            🎫 查询录取信息
+          </button>
+          <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
+            💡 查询指定院校在各省的录取分数线、招生计划等官方数据
+          </div>
+        </div>
+        <div id="vf-admit-result" style="margin-top:16px;"></div>
+      </div>
+      
+      <!-- Tab 3: 分数对照 -->
+      <div class="verify-panel" id="vpanel-compare">
+        <div class="verify-form-card">
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">🗺️ 省份</label>
+              <select id="vf-compare-province" class="form-select">
+                <option value="">选择省份</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">📚 科类</label>
+              <select id="vf-compare-subject" class="form-select">
+                <option value="物理类">物理类</option>
+                <option value="历史类">历史类</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">📅 年份</label>
+              <select id="vf-compare-year" class="form-select">
+                <option value="2025">2025年</option>
+                <option value="2024">2024年</option>
+                <option value="2023">2023年</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" onclick="doCompareMap()" style="margin-top:8px;">
+            📋 生成分数对照表
+          </button>
+          <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
+            💡 展示不同分数段对应的推荐院校，从985到普通本科全覆盖
+          </div>
+        </div>
+        <div id="vf-compare-result" style="margin-top:16px;"></div>
+      </div>
+    </section>
+    
+    <!-- ==================== CHART ==================== -->
+    <section id="section-chart" class="section">
+      <div class="section-header">
+        <h2 class="section-title">📈 数据可视化 <span class="badge">图表分析</span></h2>
+      </div>
+      
+      <div class="chart-tabs">
+        <button class="chart-tab active" data-ctab="trend">📉 分数线趋势</button>
+        <button class="chart-tab" data-ctab="radar">🎯 院校雷达图</button>
+        <button class="chart-tab" data-ctab="plan">⚡ 方案对比</button>
+      </div>
+      
+      <!-- Trend Chart -->
+      <div class="chart-panel active" id="cpanel-trend">
+        <div class="form-row">
+          <div class="form-group" style="flex:1;"><label class="form-label">🏫 院校</label>
+            <input type="text" id="chart-college" class="form-input" placeholder="输入院校名称">
+          </div>
+          <div class="form-group" style="flex:1;"><label class="form-label">🗺️ 省份</label>
+            <select id="chart-province" class="form-select"><option value="北京市">北京市</option><option value="江西省">江西省</option><option value="广东省">广东省</option><option value="浙江省">浙江省</option><option value="江苏省">江苏省</option></select>
+          </div>
+          <div class="form-group" style="flex:1;"><label class="form-label">📚 科类</label>
+            <select id="chart-subject" class="form-select"><option value="物理类">物理类</option><option value="历史类">历史类</option></select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="renderTrendChart()">📉 生成趋势图</button>
+        <canvas id="trend-canvas" width="760" height="360" style="width:100%;max-width:760px;margin-top:16px;border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--border);"></canvas>
+        <div id="trend-legend" style="margin-top:8px;font-size:12px;text-align:center;color:var(--text-muted);"></div>
+      </div>
+      
+      <!-- Radar Chart -->
+      <div class="chart-panel" id="cpanel-radar">
+        <div class="form-row">
+          <div class="form-group" style="flex:1;"><label class="form-label">🏫 院校A</label>
+            <input type="text" id="radar-college-a" class="form-input" placeholder="如 清华大学"></div>
+          <div class="form-group" style="flex:1;"><label class="form-label">🏫 院校B</label>
+            <input type="text" id="radar-college-b" class="form-input" placeholder="如 北京大学"></div>
+        </div>
+        <button class="btn btn-primary" onclick="renderRadarChart()">🎯 生成对比图</button>
+        <canvas id="radar-canvas" width="500" height="500" style="width:100%;max-width:500px;margin:16px auto 0;display:block;border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--border);"></canvas>
+      </div>
+      
+      <!-- Plan Comparison -->
+      <div class="chart-panel" id="cpanel-plan">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">💡 输入两次不同的模拟填报参数，对比生成的志愿方案差异</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="verify-form-card"><div style="font-weight:600;margin-bottom:8px;">方案A</div>
+            <div class="form-group"><label class="form-label">分数</label><input type="number" id="plan-a-score" class="form-input" placeholder="0-750" min="0" max="750"></div>
+            <div class="form-group"><label class="form-label">位次</label><input type="number" id="plan-a-rank" class="form-input" placeholder="如 5000"></div>
+            <div class="form-group"><label class="form-label">科类</label><select id="plan-a-subject" class="form-select"><option value="物理类">物理类</option><option value="历史类">历史类</option></select></div>
+            <button class="btn btn-outline btn-sm" onclick="quickFillPlan('a')">🔄 用当前分数自动填充</button>
+          </div>
+          <div class="verify-form-card"><div style="font-weight:600;margin-bottom:8px;">方案B</div>
+            <div class="form-group"><label class="form-label">分数</label><input type="number" id="plan-b-score" class="form-input" placeholder="0-750" min="0" max="750"></div>
+            <div class="form-group"><label class="form-label">位次</label><input type="number" id="plan-b-rank" class="form-input" placeholder="如 8000"></div>
+            <div class="form-group"><label class="form-label">科类</label><select id="plan-b-subject" class="form-select"><option value="物理类">物理类</option><option value="历史类">历史类</option></select></div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="comparePlans()" style="margin-top:12px;">⚡ 对比方案</button>
+        <div id="plan-compare-result" style="margin-top:16px;"></div>
+      </div>
+    </section>
+<!-- ==================== AUTH ==================== -->
+    <!-- ==================== JXSIMULATE ==================== -->
+    <section id="section-jxsimulate" class="section">
+      <div class="section-header"><h2 class="section-title">🍁 江西45个志愿AI填报模拟 <span class="badge">江西省专版</span></h2></div>
+
+      <!-- ===== 个人信息调查问卷 ===== -->
+      <div id="jx-survey-container" style="margin-bottom:24px;">
+        <!-- 问卷未完成时的展开状态 -->
+        <div id="jx-survey-active" style="display:none;">
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+            <!-- 问卷头部 -->
+            <div style="background:linear-gradient(135deg,#1a56db,#2563eb);padding:20px 24px;color:#fff;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h3 style="font-size:18px;font-weight:700;margin:0;">📋 个人信息调查问卷</h3>
+                <button onclick="jxSurveySkip()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:6px 16px;border-radius:6px;font-size:13px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">跳过，直接填报</button>
+              </div>
+              <p style="font-size:13px;opacity:0.9;margin:0 0 12px 0;">参考张雪峰等知名填报专家的提问话术，帮你更好地了解自己的需求，让AI推荐更精准</p>
+              <!-- 进度条 -->
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="flex:1;height:6px;background:rgba(255,255,255,0.2);border-radius:3px;overflow:hidden;">
+                  <div id="jx-survey-progress-bar" style="height:100%;background:#fff;border-radius:3px;transition:width 0.4s ease;width:25%;"></div>
+                </div>
+                <span id="jx-survey-progress-text" style="font-size:12px;opacity:0.85;">1 / 4</span>
+              </div>
+            </div>
+            <!-- 问卷步骤区域 -->
+            <div id="jx-survey-steps" style="padding:24px;min-height:260px;position:relative;">
+              <!-- 步骤内容由JS动态渲染 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 问卷完成后的折叠状态 -->
+        <div id="jx-survey-done" style="display:none;">
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#166534;">
+              <span style="font-size:18px;">✅</span>
+              <span>问卷已完成 · <strong id="jx-survey-summary-text"></strong></span>
+            </div>
+            <button onclick="jxSurveyReset()" style="background:#dcfce7;border:1px solid #86efac;color:#166534;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#bbf7d0'" onmouseout="this.style.background='#dcfce7'">🔄 重新评估</button>
+          </div>
+          <!-- 完成后的建议展示 -->
+          <div id="jx-survey-advice" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <div class="jxsimulate-container">
+        <div class="jx-header"><h2>📊 江西省新高考志愿模拟</h2><p>江西省新高考采用<strong>3+1+2模式</strong>，本科批次设置<strong>45个院校专业组</strong>平行志愿。输入分数和位次，AI智能推荐冲稳保三层志愿方案。</p></div>
+        <div class="jx-form-card">
+          <div class="form-row">
+            <div class="form-group" style="flex:1"><label class="form-label">📐 高考分数</label><input type="number" id="jx-score" class="form-input" placeholder="0-750分" min="0" max="750"></div>
+            <div class="form-group" style="flex:1"><label class="form-label">📊 全省位次</label><input type="number" id="jx-rank" class="form-input" placeholder="如 5000" min="1"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1"><label class="form-label">🏫 科类</label><select id="jx-subject" class="form-select"><option value="物理类">💡 物理类</option><option value="历史类">📜 历史类</option></select></div>
+            <div class="form-group" style="flex:1"><label class="form-label">📅 批次</label><select id="jx-batch" class="form-select"><option value="本科批">🎓 本科批</option><option value="高职专科批">📚 高职专科批</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">🧠 兴趣方向 <span style="color:var(--text-muted);font-weight:400;font-size:12px;">可选，用于优化专业推荐</span></label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;" id="jx-interest-container"></div>
+          </div>
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:13px;color:#1e40af;margin-top:8px;">
+            ℹ️ 江西省采用院校专业组平行志愿，本科批最多可填报45个。系统将根据分数位次，按<strong>冲(8个)-稳(20个)-保(17个)</strong>梯度智能推荐，模拟分数线基于全国1356所高校历年数据估算。
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="jxDoRecommend()" style="width:100%;margin-top:12px;font-size:16px;padding:14px;">🤖 开始AI智能推荐45个志愿</button>
+        </div>
+        <div id="jx-result" style="margin-top:24px;"></div>
+      </div>
+    </section>
+
+    <section id="section-auth" class="section">
+      <div class="auth-page">
+        <div class="auth-tabs">
+          <div class="auth-tab active" onclick="switchAuthTab(0)">登录</div>
+          <div class="auth-tab" onclick="switchAuthTab(1)">注册</div>
+        </div>
+        <div class="auth-title">🎓 梧昭高考查询</div>
+        
+        <!-- Login Form -->
+        <div id="auth-form-login" class="auth-form active">
+          <div class="form-group">
+            <label class="form-label">用户名</label>
+            <input type="text" id="login-username" class="form-input" placeholder="请输入用户名" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <input type="password" id="login-password" class="form-input" placeholder="请输入密码" />
+          </div>
+          <button id="auth-login-btn" class="btn btn-primary btn-block btn-lg" onclick="loginUser()">登 录</button>
+          <div style="text-align:center;margin-top:12px;">
+            <a href="javascript:void(0)" style="font-size:13px;" onclick="showToast('请联系管理员重置密码','info')">忘记密码？</a>
+          </div>
+        </div>
+        
+        <!-- Register Form -->
+        <div id="auth-form-reg" class="auth-form">
+          <div class="form-group">
+            <label class="form-label">用户名</label>
+            <input type="text" id="reg-username" class="form-input" placeholder="请设置用户名" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <input type="password" id="reg-password" class="form-input" placeholder="请设置密码（至少6位）" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">确认密码</label>
+            <input type="password" id="reg-confirm" class="form-input" placeholder="请再次输入密码" />
+          </div>
+          <button id="auth-reg-btn" class="btn btn-primary btn-block btn-lg" onclick="registerUser()">注 册</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="https://gaokao.chsi.com.cn" target="_blank">阳光高考</a>
+        <a href="https://www.moe.gov.cn" target="_blank">教育部官网</a>
+        <a href="https://www.neea.edu.cn" target="_blank">中国教育考试网</a>
+        <a href="https://gaokao.chsi.com.cn" target="_blank">阳光高考专业库</a>
+        <a href="https://www.jxeea.cn" target="_blank">江西教育考试院</a>
+        <a href="https://www.chsi.com.cn" target="_blank">学信网</a>
+        <a href="https://gaokao.chsi.com.cn/zyck/" target="_blank">阳光高考专业库</a>
+      </div>
+      <div class="footer-copyright">
+        <p>梧昭高考查询 · 高考志愿填报服务平台 | 数据来源：教育部阳光高考信息平台</p>
+        <p>本站为公益性高考信息服务平台，数据仅供参考，请以官方公布为准</p>
+        <div class="footer-beian">
+          <a href="https://beian.miit.gov.cn" target="_blank">京ICP备2025XXXXXX号-1</a>
+          <span>京公网安备 11000000000000号</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== College Detail Modal ===== -->
+  <div id="college-modal" class="modal-overlay" onclick="if(event.target===this)closeCollegeModal()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size:18px;font-weight:700;"></h3>
+        <button class="modal-close" onclick="closeCollegeModal()">✕</button>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/expert-kb.js"></script>
+  <script src="assets/js/province-data.js?v=9"></script>
+  <script src="assets/js/app.js?v=10"></script>
+  <script>
+    // Display current date
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString('zh-CN', {
+      year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+    });
+    
+    // Populate college datalist
+    const datalist = document.getElementById('college-list');
+    if (datalist && typeof RANKINGS !== 'undefined') {
+      RANKINGS.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        datalist.appendChild(opt);
+      });
+    }
+  </script>
+
+  <!-- 新闻详情弹窗 -->
+  <div id="news-detail-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;" onclick="closeNewsDetail()">
+    <div style="background:#fff;border-radius:16px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);" onclick="event.stopPropagation()">
+      <div style="position:sticky;top:0;background:#fff;padding:24px 24px 0 24px;z-index:1;border-bottom:1px solid #e2e8f0;padding-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <h2 class="news-detail-title" style="font-size:20px;font-weight:700;color:#1e293b;margin:0;flex:1;line-height:1.4;"></h2>
+          <button onclick="closeNewsDetail()" style="flex-shrink:0;margin-left:16px;width:32px;height:32px;border-radius:50%;border:1px solid #e2e8f0;background:#f8fafc;font-size:18px;cursor:pointer;color:#64748b;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+        <div class="news-detail-meta" style="margin-top:10px;font-size:13px;color:#64748b;"></div>
+      </div>
+      <div class="news-detail-body" style="padding:24px;font-size:15px;line-height:1.8;color:#334155;"></div>
+    </div>
+  </div>
+
+</body>
+</html>
