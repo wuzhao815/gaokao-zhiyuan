@@ -1,42 +1,43 @@
-// 2025年各省高考本科批控制线（数据来源：各省教育考试院官方公布）
+// 2026年各省高考本科批控制线（6月25日更新，已确认10省官方数据：上海、天津、广东、内蒙古、新疆、河北、重庆、福建、江苏、辽宁，其余为2025年参考）
 // 3+3模式省份：山东、浙江、北京、天津、上海、海南（满分750/660，不分物理/历史类）
 // 3+1+2模式省份：江西、湖南、湖北、广东、河北、安徽、河南、四川、福建、甘肃、贵州、辽宁、江苏、陕西、广西、云南、山西、重庆、吉林、黑龙江、内蒙古、宁夏、青海、新疆
 // 旧高考模式省份：西藏（2025年仍为文理分科）
-var PROVINCE_BATCH_LINES_2025 = {
+var PROVINCE_BATCH_LINES_2026 = {
+  // 同时保留2025变量名兼容旧代码
   // 3+1+2省份（区分物理类/历史类）
-  '江西':   { wuli: 429, wuliSpecial: 505, lishi: 486, lishiSpecial: 539, mode: '3+1+2' },
-  '湖南':   { wuli: 405, wuliSpecial: 476, lishi: 446, lishiSpecial: 503, mode: '3+1+2' },
-  '湖北':   { wuli: 426, wuliSpecial: 516, lishi: 442, lishiSpecial: 536, mode: '3+1+2' },
-  '广东':   { wuli: 436, wuliSpecial: 534, lishi: 464, lishiSpecial: 557, mode: '3+1+2' },
-  '河北':   { wuli: 459, wuliSpecial: 499, lishi: 477, lishiSpecial: 527, mode: '3+1+2' },
-  '安徽':   { wuli: 461, wuliSpecial: 514, lishi: 477, lishiSpecial: 515, mode: '3+1+2' },
-  '河南':   { wuli: 427, wuliSpecial: 535, lishi: 471, lishiSpecial: 552, mode: '3+1+2' },
-  '四川':   { wuli: 438, wuliSpecial: 518, lishi: 467, lishiSpecial: 533, mode: '3+1+2' },
-  '福建':   { wuli: 441, wuliSpecial: 520, lishi: 450, lishiSpecial: 531, mode: '3+1+2' },
-  '甘肃':   { wuli: 374, wuliSpecial: 475, lishi: 412, lishiSpecial: 500, mode: '3+1+2' },
-  '贵州':   { wuli: 387, wuliSpecial: 483, lishi: 458, lishiSpecial: 517, mode: '3+1+2' },
-  '辽宁':   { wuli: 367, wuliSpecial: 515, lishi: 437, lishiSpecial: 522, mode: '3+1+2' },
-  '江苏':   { wuli: 463, wuliSpecial: 519, lishi: 482, lishiSpecial: 537, mode: '3+1+2' },
-  '重庆':   { wuli: 425, wuliSpecial: 498, lishi: 438, lishiSpecial: 515, mode: '3+1+2' },
-  '吉林':   { wuli: 340, wuliSpecial: 479, lishi: 384, lishiSpecial: 493, mode: '3+1+2' },
-  '黑龙江': { wuli: 360, wuliSpecial: 472, lishi: 405, lishiSpecial: 480, mode: '3+1+2' },
-  '内蒙古': { wuli: 375, wuliSpecial: 487, lishi: 418, lishiSpecial: 523, mode: '3+1+2' },
-  '宁夏':   { wuli: 372, wuliSpecial: 441, lishi: 404, lishiSpecial: 482, mode: '3+1+2' },
-  '青海':   { wuli: 350, wuliSpecial: 420, lishi: 405, lishiSpecial: 450, mode: '3+1+2' },
-  '陕西':   { wuli: 394, wuliSpecial: 473, lishi: 414, lishiSpecial: 497, mode: '3+1+2' },
-  '广西':   { wuli: 370, wuliSpecial: 495, lishi: 402, lishiSpecial: 518, mode: '3+1+2' },
-  '云南':   { wuli: 430, wuliSpecial: 495, lishi: 465, lishiSpecial: 535, mode: '3+1+2' },
-  '山西':   { wuli: 419, wuliSpecial: 507, lishi: 443, lishiSpecial: 534, mode: '3+1+2' },
-  '新疆':   { wuli: 280, wuliSpecial: 421, lishi: 330, lishiSpecial: 451, mode: 'old' },
+  '江西':   { wuli: 429, wuliSpecial: 505, lishi: 486, lishiSpecial: 539, mode: '3+1+2', wuliZhuan: 240, lishiZhuan: 290 },
+  '湖南':   { wuli: 405, wuliSpecial: 476, lishi: 446, lishiSpecial: 503, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
+  '湖北':   { wuli: 426, wuliSpecial: 516, lishi: 442, lishiSpecial: 536, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
+  '广东':   { wuli: 425, wuliSpecial: 539, lishi: 440, lishiSpecial: 546, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 215 },
+  '河北':   { wuli: 443, wuliSpecial: 510, lishi: 485, lishiSpecial: 542, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
+  '安徽':   { wuli: 461, wuliSpecial: 514, lishi: 477, lishiSpecial: 515, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
+  '河南':   { wuli: 427, wuliSpecial: 535, lishi: 471, lishiSpecial: 552, mode: '3+1+2', wuliZhuan: 185, lishiZhuan: 185 },
+  '四川':   { wuli: 438, wuliSpecial: 518, lishi: 467, lishiSpecial: 533, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
+  '福建':   { wuli: 446, wuliSpecial: 528, lishi: 458, lishiSpecial: 533, mode: '3+1+2', wuliZhuan: 235, lishiZhuan: 235 },
+  '甘肃':   { wuli: 374, wuliSpecial: 475, lishi: 412, lishiSpecial: 500, mode: '3+1+2', wuliZhuan: 180, lishiZhuan: 160 },
+  '贵州':   { wuli: 387, wuliSpecial: 483, lishi: 458, lishiSpecial: 517, mode: '3+1+2', wuliZhuan: 180, lishiZhuan: 180 },
+  '辽宁':   { wuli: 344, wuliSpecial: 508, lishi: 442, lishiSpecial: 527, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
+  '江苏':   { wuli: 456, wuliSpecial: 513, lishi: 484, lishiSpecial: 532, mode: '3+1+2', wuliZhuan: 220, lishiZhuan: 220 },
+  '重庆':   { wuli: 406, wuliSpecial: 496, lishi: 415, lishiSpecial: 510, mode: '3+1+2', wuliZhuan: 180, lishiZhuan: 180 },
+  '吉林':   { wuli: 340, wuliSpecial: 479, lishi: 384, lishiSpecial: 493, mode: '3+1+2', wuliZhuan: 160, lishiZhuan: 160 },
+  '黑龙江': { wuli: 360, wuliSpecial: 472, lishi: 405, lishiSpecial: 480, mode: '3+1+2', wuliZhuan: 160, lishiZhuan: 160 },
+  '内蒙古': { wuli: 363, wuliSpecial: 488, lishi: 403, lishiSpecial: 512, mode: '3+1+2', wuliZhuan: 160, lishiZhuan: 160 },
+  '宁夏':   { wuli: 372, wuliSpecial: 441, lishi: 404, lishiSpecial: 482, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
+  '青海':   { wuli: 350, wuliSpecial: 420, lishi: 405, lishiSpecial: 450, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
+  '陕西':   { wuli: 394, wuliSpecial: 473, lishi: 414, lishiSpecial: 497, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
+  '广西':   { wuli: 370, wuliSpecial: 495, lishi: 402, lishiSpecial: 518, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
+  '云南':   { wuli: 430, wuliSpecial: 495, lishi: 465, lishiSpecial: 535, mode: '3+1+2', wuliZhuan: 180, lishiZhuan: 180 },
+  '山西':   { wuli: 419, wuliSpecial: 507, lishi: 443, lishiSpecial: 534, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
+  '新疆':   { wuli: 304, wuliSpecial: 468, lishi: 315, lishiSpecial: 451, mode: 'old', wuliZhuan: 140, lishiZhuan: 140 },
   // 3+3模式省份（不分物理/历史类，使用综合分）
-  '山东':   { wuli: 441, wuliSpecial: 521, lishi: 441, lishiSpecial: 521, mode: '3+3' },
-  '浙江':   { wuli: 490, wuliSpecial: 592, lishi: 490, lishiSpecial: 592, mode: '3+3' },
-  '北京':   { wuli: 430, wuliSpecial: 519, lishi: 430, lishiSpecial: 519, mode: '3+3' },
-  '天津':   { wuli: 476, wuliSpecial: 562, lishi: 476, lishiSpecial: 562, mode: '3+3' },
-  '上海':   { wuli: 402, wuliSpecial: 505, lishi: 402, lishiSpecial: 505, mode: '3+3', totalScore: 660 },
-  '海南':   { wuli: 480, wuliSpecial: 568, lishi: 480, lishiSpecial: 568, mode: '3+3' },
+  '山东':   { wuli: 441, wuliSpecial: 521, lishi: 441, lishiSpecial: 521, mode: '3+3', wuliZhuan: 150, lishiZhuan: 150 },
+  '浙江':   { wuli: 490, wuliSpecial: 592, lishi: 490, lishiSpecial: 592, mode: '3+3', wuliZhuan: 268, lishiZhuan: 268 },
+  '北京':   { wuli: 430, wuliSpecial: 519, lishi: 430, lishiSpecial: 519, mode: '3+3', wuliZhuan: 120, lishiZhuan: 120 },
+  '天津':   { wuli: 458, wuliSpecial: 547, lishi: 458, lishiSpecial: 547, mode: '3+3', wuliZhuan: 160, lishiZhuan: 160 },
+  '上海':   { wuli: 403, wuliSpecial: 504, lishi: 403, lishiSpecial: 504, mode: '3+3', totalScore: 660, wuliZhuan: 100, lishiZhuan: 100 },
+  '海南':   { wuli: 480, wuliSpecial: 568, lishi: 480, lishiSpecial: 568, mode: '3+3', wuliZhuan: 246, lishiZhuan: 246 },
   // 旧高考模式省份
-  '西藏':   { wuli: 305, wuliSpecial: 400, lishi: 315, lishiSpecial: 410, mode: 'old' }
+  '西藏':   { wuli: 305, wuliSpecial: 400, lishi: 315, lishiSpecial: 410, mode: 'old', wuliZhuan: 222, lishiZhuan: 255 }
 };
 
 // 3+3新高考模式省份列表（不分物理/历史类，使用综合分）
@@ -44,7 +45,7 @@ var PROVINCE_33_MODE = ['山东', '浙江', '北京', '天津', '上海', '海�
 
 // 各省985代表院校投档分（普通批最低分，数据来源：各省教育考试院/阳光高考）
 // 格式：{ wuli: 分, lishi: 分 }，null 表示该省该科类未查到
-var PROVINCE_TOP_SCORES_2025 = {
+var PROVINCE_TOP_SCORES_2026 = {
   '江西': {
     '清华大学': { wuli: 672, lishi: 662 }, '北京大学': { wuli: 673, lishi: 661 },
     '上海交通大学': { wuli: 657, lishi: 653 }, '复旦大学': { wuli: 659, lishi: 646 },
@@ -238,3 +239,7 @@ var PROVINCE_TOP_SCORES_2025 = {
     '武汉大学': { wuli: 648, lishi: 648 }, '贵州大学': { wuli: 530, lishi: 565 }
   }
 };
+
+// 兼容旧代码：保留2025变量名作为别名
+var PROVINCE_BATCH_LINES_2025 = PROVINCE_BATCH_LINES_2026;
+var PROVINCE_TOP_SCORES_2025 = PROVINCE_TOP_SCORES_2026;
