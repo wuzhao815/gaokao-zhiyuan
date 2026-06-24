@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="梧昭高考查询 - 权威高考志愿填报服务平台，提供1356所高校信息、智能AI志愿推荐、历年分数线查询、院校专业对比，助力2026高考生科学填报志愿，数据来源教育部阳光高考平台" />
+  <meta name="description" content="梧昭高考查询 - 权威高考志愿填报服务平台，数据来源教育部阳光高考平台（截至2026年6月17日全国高校3196所：本科1412所+专科1540所），提供智能AI志愿推荐、历年分数线查询、院校专业对比、双高计划高职院校查询，助力2026高考生科学填报志愿" />
   <meta name="keywords" content="高考,志愿填报,高校排名,分数线,专业选择,模拟填报,2026高考,江西高考,新高考,3+1+2,3+3,大学排名,专业推荐" />
   <meta name="author" content="梧昭高考查询" />
   <meta name="robots" content="index, follow" />
@@ -47,6 +47,7 @@
       <nav class="main-nav">
         <button class="nav-item active" data-page="home">🏠 首页</button>
         <button class="nav-item" data-page="colleges">🎓 高校大全</button>
+        <button class="nav-item" data-page="vocational">🔧 专科高职</button>
         <button class="nav-item" data-page="rankings">🏆 排行榜</button>
         <button class="nav-item" data-page="majors">📚 专业目录</button>
         <button class="nav-item" data-page="simulate">🎯 模拟填报</button>
@@ -181,6 +182,35 @@
       
       <div id="college-count" class="result-count"></div>
       <div id="college-grid" class="card-grid"></div>
+    </section>
+
+    <!-- ==================== VOCATIONAL COLLEGES ==================== -->
+    <section id="section-vocational" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🔧 专科高职院校 <span class="badge">双高计划 · 高职中的"双一流"</span></h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">数据来源：教育部"双高计划"建设单位名单（167所入选） | 截至2026年6月17日全国高职（专科）院校1540所</p>
+      </div>
+      
+      <div class="filter-bar">
+        <select id="voc-type-filter" class="form-select" onchange="renderVocationalList()">
+          <option value="">全部类型</option>
+        </select>
+        <select id="voc-loc-filter" class="form-select" onchange="renderVocationalList()">
+          <option value="">全部地区</option>
+        </select>
+        <select id="voc-level-filter" class="form-select" onchange="renderVocationalList()">
+          <option value="">全部层次</option>
+          <option value="高水平学校">高水平学校</option>
+          <option value="高水平专业群">高水平专业群</option>
+        </select>
+        <div class="header-search" style="flex:1;min-width:200px;">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="voc-search" placeholder="搜索高职院校/城市/类型（如 双高、深圳、医药…）" oninput="renderVocationalList()" />
+        </div>
+      </div>
+      
+      <div id="voc-count" class="result-count"></div>
+      <div id="voc-grid" class="card-grid"></div>
     </section>
 
     <!-- ==================== RANKINGS ==================== -->
@@ -742,8 +772,8 @@
   <!-- Scripts -->
   <script src="assets/js/data.js"></script>
   <script src="assets/js/expert-kb.js"></script>
-  <script src="assets/js/province-data.js?v=12"></script>
-  <script src="assets/js/app.js?v=12"></script>
+  <script src="assets/js/province-data.js?v=13"></script>
+  <script src="assets/js/app.js?v=13"></script>
   <script>
     // Display current date
     document.getElementById('current-date').textContent = new Date().toLocaleDateString('zh-CN', {

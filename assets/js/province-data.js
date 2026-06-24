@@ -1,4 +1,4 @@
-// 2026年各省高考本科批控制线（6月25日更新，已确认10省官方数据：上海、天津、广东、内蒙古、新疆、河北、重庆、福建、江苏、辽宁，其余为2025年参考）
+// 2026年各省高考本科批控制线（6月25日更新，已确认12省官方数据：上海、天津、广东、内蒙古、新疆、河北、重庆、福建、江苏、辽宁、河南、黑龙江，其余为2025年参考）
 // 3+3模式省份：山东、浙江、北京、天津、上海、海南（满分750/660，不分物理/历史类）
 // 3+1+2模式省份：江西、湖南、湖北、广东、河北、安徽、河南、四川、福建、甘肃、贵州、辽宁、江苏、陕西、广西、云南、山西、重庆、吉林、黑龙江、内蒙古、宁夏、青海、新疆
 // 旧高考模式省份：西藏（2025年仍为文理分科）
@@ -11,7 +11,7 @@ var PROVINCE_BATCH_LINES_2026 = {
   '广东':   { wuli: 425, wuliSpecial: 539, lishi: 440, lishiSpecial: 546, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 215 },
   '河北':   { wuli: 443, wuliSpecial: 510, lishi: 485, lishiSpecial: 542, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
   '安徽':   { wuli: 461, wuliSpecial: 514, lishi: 477, lishiSpecial: 515, mode: '3+1+2', wuliZhuan: 200, lishiZhuan: 200 },
-  '河南':   { wuli: 427, wuliSpecial: 535, lishi: 471, lishiSpecial: 552, mode: '3+1+2', wuliZhuan: 185, lishiZhuan: 185 },
+  '河南':   { wuli: 419, wuliSpecial: 513, lishi: 459, lishiSpecial: 534, mode: '3+1+2', wuliZhuan: 179, lishiZhuan: 179 },
   '四川':   { wuli: 438, wuliSpecial: 518, lishi: 467, lishiSpecial: 533, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
   '福建':   { wuli: 446, wuliSpecial: 528, lishi: 458, lishiSpecial: 533, mode: '3+1+2', wuliZhuan: 235, lishiZhuan: 235 },
   '甘肃':   { wuli: 374, wuliSpecial: 475, lishi: 412, lishiSpecial: 500, mode: '3+1+2', wuliZhuan: 180, lishiZhuan: 160 },
@@ -20,7 +20,7 @@ var PROVINCE_BATCH_LINES_2026 = {
   '江苏':   { wuli: 456, wuliSpecial: 513, lishi: 484, lishiSpecial: 532, mode: '3+1+2', wuliZhuan: 220, lishiZhuan: 220 },
   '重庆':   { wuli: 406, wuliSpecial: 496, lishi: 415, lishiSpecial: 510, mode: '3+1+2', wuliZhuan: 180, lishiZhuan: 180 },
   '吉林':   { wuli: 340, wuliSpecial: 479, lishi: 384, lishiSpecial: 493, mode: '3+1+2', wuliZhuan: 160, lishiZhuan: 160 },
-  '黑龙江': { wuli: 360, wuliSpecial: 472, lishi: 405, lishiSpecial: 480, mode: '3+1+2', wuliZhuan: 160, lishiZhuan: 160 },
+  '黑龙江': { wuli: 340, wuliSpecial: 464, lishi: 385, lishiSpecial: 466, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
   '内蒙古': { wuli: 363, wuliSpecial: 488, lishi: 403, lishiSpecial: 512, mode: '3+1+2', wuliZhuan: 160, lishiZhuan: 160 },
   '宁夏':   { wuli: 372, wuliSpecial: 441, lishi: 404, lishiSpecial: 482, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
   '青海':   { wuli: 350, wuliSpecial: 420, lishi: 405, lishiSpecial: 450, mode: '3+1+2', wuliZhuan: 150, lishiZhuan: 150 },
