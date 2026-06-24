@@ -9,6 +9,57 @@ var currentUser = null;
 var selectedInterests = [];
 var lastRecommendData = null;
 
+// ========== 双轨制辅助函数：本科/专科数据源 ==========
+function getUndergraduateRankings() {
+  return [].concat(RANKINGS || []);
+}
+
+function getVocationalRankings() {
+  return [].concat(VOCATIONAL_COLLEGES || []);
+}
+
+// 双高计划层次排序权重：A档 > B档 > C档 > 国家示范 > 国家骨干 > 其他
+function getVocationalTierScore(college) {
+  var tags = college.tags || [];
+  for (var ti = 0; ti < tags.length; ti++) {
+    var t = tags[ti];
+    if (t.indexOf('双高计划A档') !== -1) return 50;
+    if (t.indexOf('双高计划B档') !== -1) return 40;
+    if (t.indexOf('双高计划C档') !== -1) return 30;
+    if (t.indexOf('国家示范') !== -1) return 20;
+    if (t.indexOf('国家骨干') !== -1) return 10;
+  }
+  return 0;
+}
+
+// 判断是否为专科院校（在VOCATIONAL_COLLEGES中）
+function isVocationalCollege(college) {
+  if (!college || !college.name) return false;
+  var vocList = getVocationalRankings();
+  for (var vi = 0; vi < vocList.length; vi++) {
+    if (vocList[vi].name === college.name) return true;
+  }
+  return false;
+}
+
+// 获取专科院校的估算投档分（基于排名和层次）
+function getVocationalScoreEstimate(college, batchLine) {
+  var vocList = getVocationalRankings();
+  var totalVoc = vocList.length;
+  var tierScore = getVocationalTierScore(college);
+  // 基于排名位置线性映射：排名越靠前，估算分越接近批次线
+  var rankRatio = 1 - (college.rank / totalVoc);
+  // 专科分数范围：批次线以下200分到批次线
+  var est = batchLine - 200 + (rankRatio * 180) + (tierScore * 0.5);
+  return Math.round(est);
+}
+
+// 判断是否为公办/民办专科院校
+function isVocationalPublic(college) {
+  if (!college || !college.type) return true; // 默认公办
+  return college.type.indexOf('民办') === -1;
+}
+
 // ===== Favorites System (localStorage) =====
 function getFavorites() {
   try {
@@ -26,7 +77,17 @@ function renderVocationalList() {
   var levelFilter = document.getElementById('voc-level-filter');
   var searchInput = document.getElementById('voc-search');
   
-  var list = [].concat(VOCATIONAL_COLLEGES || []);
+  // Use getSchoolsByLevel('专科') from schools-db.js
+  var list = getSchoolsByLevel('专科').map(function(s) {
+    return {
+      name: s.name,
+      location: s.province,
+      type: s.type,
+      rank: s.vocRank || 0,
+      tags: s.tags || [],
+      level: s.shuanggaoLevel || s.level
+    };
+  });
   
   if (typeFilter && typeFilter.value) {
     list = list.filter(function(c) { return c.type === typeFilter.value; });
@@ -53,10 +114,11 @@ function renderVocationalList() {
     });
   }
   
+  var totalVocCount = getSchoolsByLevel('专科').length;
   var grid = document.getElementById('voc-grid');
   var count = document.getElementById('voc-count');
   
-  if (count) count.textContent = '共 ' + list.length + ' 所高职院校';
+  if (count) count.textContent = '共 ' + list.length + ' 所高职院校（全国共 ' + totalVocCount + ' 所）';
   
   if (grid) {
     if (list.length === 0) {
@@ -101,11 +163,12 @@ function renderVocationalList() {
     }).join('');
   }
   
-  // Populate filters
+  // Populate filters from all vocational schools
+  var vocSchools = getSchoolsByLevel('专科');
   if (typeFilter && !typeFilter.dataset.populated) {
     typeFilter.dataset.populated = 'true';
     var types = [];
-    (VOCATIONAL_COLLEGES || []).forEach(function(c) {
+    vocSchools.forEach(function(c) {
       if (types.indexOf(c.type) === -1) types.push(c.type);
     });
     types.sort();
@@ -118,8 +181,8 @@ function renderVocationalList() {
   if (locFilter && !locFilter.dataset.populated) {
     locFilter.dataset.populated = 'true';
     var locs = [];
-    (VOCATIONAL_COLLEGES || []).forEach(function(c) {
-      if (locs.indexOf(c.location) === -1) locs.push(c.location);
+    vocSchools.forEach(function(c) {
+      if (locs.indexOf(c.province) === -1) locs.push(c.province);
     });
     locs.sort();
     locs.forEach(function(l) {
@@ -815,7 +878,17 @@ function renderHomePage() {
   // Render rankings
   var rankingList = document.getElementById('home-rankings');
   if (rankingList) {
-    rankingList.innerHTML = RANKINGS.slice(0, 8).map(function(c, i) {
+    var homeRankings = getUndergraduateRankings().map(function(s) {
+      return {
+        name: s.name,
+        location: s.province,
+        type: s.type,
+        rank: s.ranking || 0,
+        score: s.score || 0,
+        tags: s.tags || []
+      };
+    });
+    rankingList.innerHTML = homeRankings.slice(0, 8).map(function(c, i) {
       var favHtml = '<span class="fav-btn ' + (isFavorited(c.name) ? 'active' : '') + '" onclick="event.stopPropagation();toggleFavorite(\'' + c.name + '\')" title="' + (isFavorited(c.name) ? '取消收藏' : '收藏') + '">' + (isFavorited(c.name) ? '\u2764\uFE0F' : '\u{1F90D}') + '</span>';
       return '<div class="card college-card card-clickable" onclick="showCollegeDetail(\'' + c.name + '\')">' +
         '<div style="position:relative;">' +
@@ -976,38 +1049,49 @@ function loadMoreColleges() {
 function renderCollegeList() {
   var typeFilter = document.getElementById('college-type-filter');
   var locFilter = document.getElementById('college-loc-filter');
+  var levelFilter = document.getElementById('college-level-filter');
   var searchInput = document.getElementById('college-search');
   
   collegePageOffset = 60;
-  var list = [].concat(RANKINGS);
   
+  // Use searchSchools() when keyword present, otherwise getAllSchools()
+  var rawList;
+  if (searchInput && searchInput.value.trim()) {
+    rawList = searchSchools(searchInput.value.trim());
+  } else {
+    rawList = getAllSchools();
+  }
+  
+  // Map expanded school fields to card-compatible format
+  var list = rawList.map(function(s) {
+    return {
+      name: s.name,
+      location: s.province,
+      type: s.type,
+      rank: s.ranking || 0,
+      score: s.score || 0,
+      tags: s.tags || [],
+      level: s.level
+    };
+  });
+  
+  if (levelFilter && levelFilter.value) {
+    list = list.filter(function(c) { return c.level === levelFilter.value; });
+  }
   if (typeFilter && typeFilter.value) {
     list = list.filter(function(c) { return c.type === typeFilter.value; });
   }
   if (locFilter && locFilter.value) {
     list = list.filter(function(c) { return c.location === locFilter.value; });
   }
-  if (searchInput && searchInput.value.trim()) {
-    var q = searchInput.value.trim().toLowerCase();
-    list = list.filter(function(c) {
-      if (c.name.toLowerCase().indexOf(q) !== -1) return true;
-      if (c.location.toLowerCase().indexOf(q) !== -1) return true;
-      if (c.type.toLowerCase().indexOf(q) !== -1) return true;
-      if (c.tags && c.tags.length > 0) {
-        for (var ti = 0; ti < c.tags.length; ti++) {
-          if (c.tags[ti].toLowerCase().indexOf(q) !== -1) return true;
-        }
-      }
-      return false;
-    });
-  }
   
   filteredColleges = list;
   
+  var totalCount = getAllSchools().length;
   var grid = document.getElementById('college-grid');
   var count = document.getElementById('college-count');
   
-  if (count) count.textContent = '共 ' + list.length + ' 所高校';
+  if (count) count.textContent = '共 ' + list.length + ' 所高校（全国共 ' + totalCount + ' 所）';
   
   if (grid) {
     if (list.length === 0) {
@@ -1051,13 +1135,15 @@ function renderCollegeList() {
     }
   }
   
-  // Populate filters
+  // Populate filters from all schools
+  var allSchools = getAllSchools();
   if (typeFilter && !typeFilter.dataset.populated) {
     typeFilter.dataset.populated = 'true';
     var types = [];
-    RANKINGS.forEach(function(c) {
+    allSchools.forEach(function(c) {
       if (types.indexOf(c.type) === -1) types.push(c.type);
     });
+    types.sort();
     types.forEach(function(t) {
       var opt = document.createElement('option');
       opt.value = t; opt.textContent = t;
@@ -1067,15 +1153,41 @@ function renderCollegeList() {
   if (locFilter && !locFilter.dataset.populated) {
     locFilter.dataset.populated = 'true';
     var locs = [];
-    RANKINGS.forEach(function(c) {
-      if (locs.indexOf(c.location) === -1) locs.push(c.location);
+    allSchools.forEach(function(c) {
+      if (locs.indexOf(c.province) === -1) locs.push(c.province);
     });
+    locs.sort();
     locs.forEach(function(l) {
       var opt = document.createElement('option');
       opt.value = l; opt.textContent = l;
       locFilter.appendChild(opt);
     });
   }
+}
+
+// ===================== GLOBAL SEARCH =====================
+function doSearch() {
+  var searchInput = document.getElementById('college-search');
+  var keyword = searchInput ? searchInput.value.trim() : '';
+  
+  if (!keyword) {
+    // If no keyword, just render the full college list
+    renderCollegeList();
+    return;
+  }
+  
+  var results = searchSchools(keyword);
+  var totalCount = getAllSchools().length;
+  
+  // Navigate to college list page to show results
+  navigateTo('colleges');
+  
+  // Update the search input with the keyword
+  var searchInput2 = document.getElementById('college-search');
+  if (searchInput2) searchInput2.value = keyword;
+  
+  // Trigger renderCollegeList which will use searchSchools() when keyword is present
+  renderCollegeList();
 }
 
 // ===================== NEWS PAGE =====================
@@ -1874,11 +1986,57 @@ function doCompare() {
 function renderRankingsPage() {
   var grid = document.getElementById('rankings-grid');
   var count = document.getElementById('rankings-count');
+  var tabContainer = document.getElementById('rankings-tabs');
   
-  if (count) count.textContent = '共 ' + RANKINGS.length + ' 所高校参与排名';
+  // Determine active ranking tab (default: undergraduate)
+  var activeTab = 'undergraduate';
+  if (tabContainer) {
+    var activeBtn = tabContainer.querySelector('.ranking-tab.active');
+    if (activeBtn) activeTab = activeBtn.dataset.tab || 'undergraduate';
+  }
+  
+  var rankings;
+  if (activeTab === 'vocational') {
+    var vocRaw = getVocationalRankings();
+    rankings = vocRaw.map(function(s, i) {
+      return {
+        name: s.name,
+        location: s.province,
+        type: s.type,
+        rank: s.vocRank || (i + 1),
+        score: s.score || 0,
+        tags: s.tags || [],
+        level: s.shuanggaoLevel || s.level
+      };
+    });
+  } else {
+    var ugRaw = getUndergraduateRankings();
+    rankings = ugRaw.map(function(s) {
+      return {
+        name: s.name,
+        location: s.province,
+        type: s.type,
+        rank: s.ranking || 0,
+        score: s.score || 0,
+        tags: s.tags || [],
+        level: s.level
+      };
+    });
+  }
+  
+  if (count) {
+    var label = activeTab === 'vocational' ? '专科' : '本科';
+    count.textContent = '共 ' + rankings.length + ' 所' + label + '高校参与排名';
+  }
+  
+  // Render tab buttons
+  if (tabContainer) {
+    tabContainer.innerHTML = '<button class="ranking-tab' + (activeTab === 'undergraduate' ? ' active' : '') + '" data-tab="undergraduate" onclick="switchRankingTab(\'undergraduate\')" style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-right:8px;background:' + (activeTab === 'undergraduate' ? 'var(--primary)' : '#fff') + ';color:' + (activeTab === 'undergraduate' ? '#fff' : 'var(--text-primary)') + ';font-weight:600;">🎓 本科排行榜</button>' +
+      '<button class="ranking-tab' + (activeTab === 'vocational' ? ' active' : '') + '" data-tab="vocational" onclick="switchRankingTab(\'vocational\')" style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:' + (activeTab === 'vocational' ? 'var(--primary)' : '#fff') + ';color:' + (activeTab === 'vocational' ? '#fff' : 'var(--text-primary)') + ';font-weight:600;">🏫 专科排行榜</button>';
+  }
   
   if (grid) {
-    grid.innerHTML = RANKINGS.map(function(c, i) {
+    grid.innerHTML = rankings.map(function(c, i) {
       var favHtml = '<span class="fav-btn ' + (isFavorited(c.name) ? 'active' : '') + '" onclick="event.stopPropagation();toggleFavorite(\'' + c.name + '\')" title="' + (isFavorited(c.name) ? '取消收藏' : '收藏') + '">' + (isFavorited(c.name) ? '\u2764\uFE0F' : '\u{1F90D}') + '</span>';
       return '<div class="card college-card card-clickable" onclick="showCollegeDetail(\'' + c.name + '\')">' +
         '<div class="college-rank ' + (i < 3 ? 'top3' : '') + '">' +
@@ -1905,6 +2063,19 @@ function renderRankingsPage() {
       '</div>';
     }).join('');
   }
+}
+
+// Switch ranking tab
+function switchRankingTab(tab) {
+  var tabContainer = document.getElementById('rankings-tabs');
+  if (tabContainer) {
+    var buttons = tabContainer.querySelectorAll('.ranking-tab');
+    for (var bi = 0; bi < buttons.length; bi++) {
+      buttons[bi].classList.remove('active');
+      if (buttons[bi].dataset.tab === tab) buttons[bi].classList.add('active');
+    }
+  }
+  renderRankingsPage();
 }
 
 
@@ -2552,7 +2723,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var searchInput = document.getElementById('college-search');
   if (searchInput) {
     searchInput.addEventListener('keyup', function(e) {
-      if (e.key === 'Enter') renderCollegeList();
+      if (e.key === 'Enter') doSearch();
     });
   }
   
@@ -2586,7 +2757,7 @@ function runAiSelfCheck() {
     if (document.getElementById('section-' + sections[i])) okSections++;
   }
   var navCount = document.querySelectorAll('.nav-item').length;
-  var collegeCount = (typeof RANKINGS !== 'undefined' && RANKINGS) ? RANKINGS.length : 0;
+  var collegeCount = (typeof getAllSchools === 'function') ? getAllSchools().length : 0;
   var interestCount = (typeof INTEREST_CATEGORIES !== 'undefined' && INTEREST_CATEGORIES) ? INTEREST_CATEGORIES.length : 0;
   var majorMapCount = 0;
   if (typeof COLLEGE_MAJORS !== 'undefined' && COLLEGE_MAJORS) {
@@ -3217,7 +3388,19 @@ function jxCalculateAiScore(level, diff, prob, interestMatched, collegeRank, maj
     cityBonus = ['北京','上海','广东','江苏','浙江'].indexOf(college.location) !== -1 ? 3 : 0;
   }
 
-  return Math.min(99, Math.max(45, levelBase + diffScore + probScore + interestScore + rankScore + expertScore + pitfallPenalty + valueBonus + cityBonus - 12));
+  // 专科院校加分：双高计划层次 + 公办/民办区分
+  var vocationalBonus = 0;
+  if (college && isVocationalCollege(college)) {
+    var tierScore = getVocationalTierScore(college);
+    vocationalBonus += Math.round(tierScore / 5); // 双高A档+10, B档+8, C档+6, 国家示范+4, 国家骨干+2
+    if (isVocationalPublic(college)) {
+      vocationalBonus += 3; // 公办专科额外+3分
+    } else {
+      vocationalBonus -= 3; // 民办专科-3分
+    }
+  }
+
+  return Math.min(99, Math.max(45, levelBase + diffScore + probScore + interestScore + rankScore + expertScore + pitfallPenalty + valueBonus + cityBonus + vocationalBonus - 12));
 }
 
 function jxBuildAiReason(level, diff, prob, interestMatched, majorNames, ctx) {
@@ -3415,30 +3598,35 @@ function jxDoRecommend() {
   var batchLineData = PROVINCE_BATCH_LINES_2025['江西'] || {};
   var batchLine = batchLineData[sk] || (is33Mode ? 441 : ((subject === '物理类') ? 429 : 486));
 
-  // Score+rank all 1356 colleges
+  // 双轨制：根据分数是否低于本科线判断专科/本科路径
+  var isVocational = score < batchLine;
+  var collegeList = isVocational ? getVocationalRankings() : getUndergraduateRankings();
+
+  // Score+rank all colleges
   var all = [];
-  for (var i = 0; i < RANKINGS.length; i++) {
-    var c = RANKINGS[i];
-    var base = getCollegeScoreBase(c.name);
-    // 3+3模式使用综合分（取wuli和lishi的平均值）
+  for (var i = 0; i < collegeList.length; i++) {
+    var c = collegeList[i];
     var est;
-    if (is33Mode) {
-      est = (base.wuli + base.lishi) / 2;
+    if (isVocational) {
+      est = getVocationalScoreEstimate(c, batchLine);
     } else {
-      est = base[sk];
+      var base = getCollegeScoreBase(c.name);
+      if (is33Mode) {
+        est = (base.wuli + base.lishi) / 2;
+      } else {
+        est = base[sk];
+      }
     }
-    // 兴趣匹配只影响专业推荐（jxPickMajorNames），不影响院校投档分
+    if (!est) continue;
     var diff = score - est;
-    // 过滤掉投档分远超考生分数的院校（diff < -30 表示投档分比考生高30分以上）
-    if (diff < -30) continue; // 跳过该院校，不加入推荐列表
-    // 过滤掉投档分超出考生与批次线差值太多的院校
-    var scoreAboveLine = score - batchLine; // 考生超出批次线的分数
-    if (est - batchLine > scoreAboveLine + 20) continue; // 投档分超出批次线的幅度比考生多20分以上，排除
+    if (diff < -30) continue;
+    var scoreAboveLine = score - batchLine;
+    if (est - batchLine > scoreAboveLine + 20) continue;
     var level = diff >= 12 ? 'safe' : (diff >= -8 ? 'target' : 'reach');
     var lowProb = Math.max(3, Math.min(12, 8 + diff));
     var prob = Math.min(99, Math.max(1, diff >= 30 ? 95 : diff >= 15 ? 75 : diff >= 5 ? 55 : diff >= -5 ? 40 : diff >= -15 ? 20 : lowProb));
-
-    all.push({ college: c, est: est, diff: diff, level: level, prob: prob, source: base.source, batchDiff: est - batchLine });
+    var source = isVocational ? 'estimate' : base.source;
+    all.push({ college: c, est: est, diff: diff, level: level, prob: prob, source: source, batchDiff: est - batchLine, isVocational: isVocational });
   }
 
   // Sort: diff ascending (投档分从低到高)，保底层自然在前面，冲刺层在后面
@@ -3510,6 +3698,8 @@ function jxDoRecommend() {
 
   var tierNames = { reach: '🚀 冲刺院校（竞争激烈，冲一冲）', target: '🎯 稳妥院校（匹配度较高）', safe: '🛡️ 保底院校（录取把握大）' };
   var tierClasses = { reach: 'reach', target: 'target', safe: 'safe' };
+  var vocTag = isVocational ? '📚 专科推荐' : '';
+  var vocHeaderColor = isVocational ? '#2d6a4f' : '#1a56db';
 
   for (var vi = 0; vi < v.length; vi++) {
     var item = v[vi];
@@ -3521,7 +3711,20 @@ function jxDoRecommend() {
     var d = item.data;
     var c = d.college;
     var tagsHtml = '';
-    if (c.tags && c.tags.length > 0) {
+    if (isVocational && c.tags && c.tags.length > 0) {
+      for (var tgi = 0; tgi < c.tags.length; tgi++) {
+        var tg = c.tags[tgi];
+        var tgc = '#2d6a4f'; // 专科标签默认绿色
+        if (tg.indexOf('A档') !== -1) tgc = '#1b4332';
+        else if (tg.indexOf('B档') !== -1) tgc = '#2d6a4f';
+        else if (tg.indexOf('C档') !== -1) tgc = '#40916c';
+        else if (tg.indexOf('国家示范') !== -1) tgc = '#52b788';
+        else if (tg.indexOf('国家骨干') !== -1) tgc = '#74c69d';
+        else if (tg.indexOf('职业本科') !== -1) tgc = '#1b4332';
+        tagsHtml += '<span style="display:inline-block;padding:1px 4px;border-radius:3px;font-size:10px;background:' + tgc + ';color:#fff;margin-right:2px;">' + tg + '</span>';
+      }
+      tagsHtml += '<span style="display:inline-block;padding:1px 4px;border-radius:3px;font-size:10px;background:#2d6a4f;color:#fff;margin-left:2px;">📚专科</span>';
+    } else if (c.tags && c.tags.length > 0) {
       for (var tgi = 0; tgi < c.tags.length; tgi++) {
         var tg = c.tags[tgi];
         var tgc = tg === '985' ? '#991b1b' : (tg === '211' ? '#b45309' : '#0d9488');
@@ -3590,10 +3793,10 @@ function jxDoRecommend() {
   }
 
   resultDiv.innerHTML =
-    '<div style="background:linear-gradient(135deg,#1a56db,#1e40af);color:#fff;border-radius:12px;padding:20px;margin-bottom:16px;">' +
-      '<div style="font-size:13px;opacity:0.85;">' + subject + ' · ' + batch + ' · 分数' + score + '分 · 位次' + rank.toLocaleString() + '</div>' +
+    '<div style="background:linear-gradient(135deg,' + vocHeaderColor + ',#1e40af);color:#fff;border-radius:12px;padding:20px;margin-bottom:16px;">' +
+      '<div style="font-size:13px;opacity:0.85;">' + subject + ' · ' + batch + ' · 分数' + score + '分 · 位次' + rank.toLocaleString() + (isVocational ? ' · 📚专科推荐' : '') + '</div>' +
       '<div style="font-size:28px;font-weight:800;margin:8px 0;">' + summaryStats + '</div>' +
-      '<div style="font-size:13px;opacity:0.85;">冲' + Math.min(15, reach.length) + ' · 稳' + Math.min(15, target.length) + ' · 保' + Math.min(15, safe.length) + ' | 本地AI已结合分数、位次、兴趣方向和院校层次生成推荐依据</div>' +
+      '<div style="font-size:13px;opacity:0.85;">冲' + Math.min(15, reach.length) + ' · 稳' + Math.min(15, target.length) + ' · 保' + Math.min(15, safe.length) + ' | 本地AI已结合分数、位次、兴趣方向和院校层次生成推荐依据' + (isVocational ? ' | 双高计划层次排序' : '') + '</div>' +
       surveyInfoHtml +
     '</div>' +
     '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">' +
@@ -4229,16 +4432,24 @@ function simDoRecommend() {
   // 保存科类到jxLastResult（供jxPickMajorNames使用）
   jxLastResult = { subject: subject, score: score, rank: rank, province: province };
 
+  // 双轨制：根据分数是否低于本科线判断专科/本科路径
+  var isVocational = score < batchLine;
+  var collegeList = isVocational ? getVocationalRankings() : getUndergraduateRankings();
+
   // Score+rank all colleges
   var all = [];
-  for (var i = 0; i < RANKINGS.length; i++) {
-    var c = RANKINGS[i];
-    var base = getCollegeScoreBase(c.name);
+  for (var i = 0; i < collegeList.length; i++) {
+    var c = collegeList[i];
     var est;
-    if (is33Mode) {
-      est = (base.wuli + base.lishi) / 2;
+    if (isVocational) {
+      est = getVocationalScoreEstimate(c, batchLine);
     } else {
-      est = base[sk];
+      var base = getCollegeScoreBase(c.name);
+      if (is33Mode) {
+        est = (base.wuli + base.lishi) / 2;
+      } else {
+        est = base[sk];
+      }
     }
     if (!est) continue;
     var diff = score - est;
@@ -4248,7 +4459,8 @@ function simDoRecommend() {
     var level = diff >= 12 ? 'safe' : (diff >= -8 ? 'target' : 'reach');
     var lowProb = Math.max(3, Math.min(12, 8 + diff));
     var prob = Math.min(99, Math.max(1, diff >= 30 ? 95 : diff >= 15 ? 75 : diff >= 5 ? 55 : diff >= -5 ? 40 : diff >= -15 ? 20 : lowProb));
-    all.push({ college: c, est: est, diff: diff, level: level, prob: prob, source: base.source, batchDiff: est - batchLine });
+    var source = isVocational ? 'estimate' : base.source;
+    all.push({ college: c, est: est, diff: diff, level: level, prob: prob, source: source, batchDiff: est - batchLine, isVocational: isVocational });
   }
 
   all.sort(function(a, b) { return a.diff - b.diff; });
@@ -4300,6 +4512,8 @@ function simDoRecommend() {
   var rowsHtml = '';
   var tierNames = { reach: '🚀 冲刺院校（竞争激烈，冲一冲）', target: '🎯 稳妥院校（匹配度较高）', safe: '🛡️ 保底院校（录取把握大）' };
   var tierClasses = { reach: 'reach', target: 'target', safe: 'safe' };
+  var vocTag = isVocational ? '📚 专科推荐' : '';
+  var vocHeaderColor = isVocational ? '#2d6a4f' : '#1a56db';
 
   for (var vi = 0; vi < v.length; vi++) {
     var item = v[vi];
@@ -4311,7 +4525,20 @@ function simDoRecommend() {
     var d = item.data;
     var c = d.college;
     var tagsHtml = '';
-    if (c.tags && c.tags.length > 0) {
+    if (isVocational && c.tags && c.tags.length > 0) {
+      for (var tgi = 0; tgi < c.tags.length; tgi++) {
+        var tg = c.tags[tgi];
+        var tgc = '#2d6a4f';
+        if (tg.indexOf('A档') !== -1) tgc = '#1b4332';
+        else if (tg.indexOf('B档') !== -1) tgc = '#2d6a4f';
+        else if (tg.indexOf('C档') !== -1) tgc = '#40916c';
+        else if (tg.indexOf('国家示范') !== -1) tgc = '#52b788';
+        else if (tg.indexOf('国家骨干') !== -1) tgc = '#74c69d';
+        else if (tg.indexOf('职业本科') !== -1) tgc = '#1b4332';
+        tagsHtml += '<span style="display:inline-block;padding:1px 4px;border-radius:3px;font-size:10px;background:' + tgc + ';color:#fff;margin-right:2px;">' + tg + '</span>';
+      }
+      tagsHtml += '<span style="display:inline-block;padding:1px 4px;border-radius:3px;font-size:10px;background:#2d6a4f;color:#fff;margin-left:2px;">📚专科</span>';
+    } else if (c.tags && c.tags.length > 0) {
       for (var tgi = 0; tgi < c.tags.length; tgi++) {
         var tg = c.tags[tgi];
         var tgc = tg === '985' ? '#991b1b' : (tg === '211' ? '#b45309' : '#0d9488');
@@ -4360,10 +4587,10 @@ function simDoRecommend() {
 
   var modeText = is33Mode ? '3+3综合分' : subject;
   resultDiv.innerHTML =
-    '<div style="background:linear-gradient(135deg,#1e40af,#1a56db);border-radius:var(--radius-lg);padding:20px 24px;color:#fff;margin-bottom:16px;">' +
+    '<div style="background:linear-gradient(135deg,' + vocHeaderColor + ',#1e40af);border-radius:var(--radius-lg);padding:20px 24px;color:#fff;margin-bottom:16px;">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
-        '<div><h3 style="font-size:18px;font-weight:700;margin:0 0 6px 0;">📊 ' + province + ' · ' + modeText + ' · ' + score + '分</h3>' +
-        '<p style="font-size:13px;opacity:0.9;margin:0;">批次线：' + batchLine + '分 | 超出批次线：' + (score - batchLine) + '分 | 推荐' + v.length + '个志愿</p></div>' +
+        '<div><h3 style="font-size:18px;font-weight:700;margin:0 0 6px 0;">📊 ' + province + ' · ' + modeText + ' · ' + score + '分' + (isVocational ? ' · 📚专科推荐' : '') + '</h3>' +
+        '<p style="font-size:13px;opacity:0.9;margin:0;">批次线：' + batchLine + '分 | 超出批次线：' + (score - batchLine) + '分 | 推荐' + v.length + '个志愿' + (isVocational ? ' | 双高计划层次排序' : '') + '</p></div>' +
         '<div style="display:flex;gap:8px;">' +
           '<button class="btn btn-outline btn-sm" onclick="simDoRecommend()" style="color:#fff;border-color:rgba(255,255,255,0.4);">🔄 重新推荐</button>' +
         '</div>' +
