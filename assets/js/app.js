@@ -9,33 +9,41 @@ var currentUser = null;
 var selectedInterests = [];
 var lastRecommendData = null;
 
-// ===== v16: 用schools-db.js全量数据覆盖旧RANKINGS/VOCATIONAL_COLLEGES =====
+// ===== v17: 用schools-db.js全量数据覆盖旧RANKINGS/VOCATIONAL_COLLEGES =====
 // 保持旧格式兼容性（location/rank/score/tags），数据来源升级为2952所学校
-RANKINGS = getAllSchools().map(function(s) {
-  return {
-    name: s.name,
-    rank: s.ranking || 0,
-    score: s.score || 0,
-    tags: s.tags || [],
-    location: s.province,
-    type: s.type,
-    level: s.level,
-    isPublic: s.isPublic
-  };
-});
-VOCATIONAL_COLLEGES = getSchoolsByLevel('专科').map(function(s) {
-  return {
-    name: s.name,
-    rank: s.vocRank || 0,
-    score: s.score || 0,
-    tags: s.tags || [],
-    location: s.province,
-    type: s.type,
-    level: s.level,
-    isPublic: s.isPublic,
-    shuanggaoLevel: s.shuanggaoLevel || ''
-  };
-});
+// 注意：RANKINGS在data.js中声明为const，不能重新赋值，必须用数组变异方式
+(function() {
+  var newRankings = getAllSchools().map(function(s) {
+    return {
+      name: s.name,
+      rank: s.ranking || 0,
+      score: s.score || 0,
+      tags: s.tags || [],
+      location: s.province,
+      type: s.type,
+      level: s.level,
+      isPublic: s.isPublic
+    };
+  });
+  var newVoc = getSchoolsByLevel('专科').map(function(s) {
+    return {
+      name: s.name,
+      rank: s.vocRank || 0,
+      score: s.score || 0,
+      tags: s.tags || [],
+      location: s.province,
+      type: s.type,
+      level: s.level,
+      isPublic: s.isPublic,
+      shuanggaoLevel: s.shuanggaoLevel || ''
+    };
+  });
+  // 用数组变异方式填充（RANKINGS是const不能重新赋值）
+  RANKINGS.length = 0;
+  Array.prototype.push.apply(RANKINGS, newRankings);
+  VOCATIONAL_COLLEGES.length = 0;
+  Array.prototype.push.apply(VOCATIONAL_COLLEGES, newVoc);
+})();
 filteredColleges = [].concat(RANKINGS);
 
 // 双高计划层次排序权重：A档 > B档 > C档 > 国家示范 > 国家骨干 > 其他
