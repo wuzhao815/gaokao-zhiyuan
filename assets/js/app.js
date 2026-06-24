@@ -3384,9 +3384,9 @@ function jxDoRecommend() {
   reach.sort(function(a, b) { return b.diff - a.diff; }); // reach层：从最接近的开始取（最有希望冲刺的）
   target.sort(function(a, b) { return b.diff - a.diff; }); // target层：从最接近稳妥线的开始取
   // safe层保持diff升序（最安全的在前，all已经是升序，不需要改）
-  pad('reach', reach, 8);
-  pad('target', target, 28);
-  pad('safe', safe, 40);
+  pad('reach', reach, 12);
+  pad('target', target, 35);
+  pad('safe', safe, 45);
 
   jxLastResult = { v: v, score: score, rank: rank, subject: subject, batch: batch };
 
@@ -4144,10 +4144,10 @@ function simDoRecommend() {
   var target = all.filter(function(x) { return x.level === 'target'; });
   var safe = all.filter(function(x) { return x.level === 'safe'; });
 
-  // 按比例分配冲稳保
-  var reachCount = Math.round(totalCount * 0.18);
-  var safeCount = Math.round(totalCount * 0.38);
-  var targetCount = totalCount - reachCount - safeCount;
+  // 按比例分配冲稳保: 冲12 稳23 保10 (共45)
+  var reachCount = 12;
+  var safeCount = 10;
+  var targetCount = 23;
 
   var v = [];
   var usedNames = {};
