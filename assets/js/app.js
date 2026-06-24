@@ -9,14 +9,34 @@ var currentUser = null;
 var selectedInterests = [];
 var lastRecommendData = null;
 
-// ========== 双轨制辅助函数：本科/专科数据源 ==========
-function getUndergraduateRankings() {
-  return [].concat(RANKINGS || []);
-}
-
-function getVocationalRankings() {
-  return [].concat(VOCATIONAL_COLLEGES || []);
-}
+// ===== v16: 用schools-db.js全量数据覆盖旧RANKINGS/VOCATIONAL_COLLEGES =====
+// 保持旧格式兼容性（location/rank/score/tags），数据来源升级为2952所学校
+RANKINGS = getAllSchools().map(function(s) {
+  return {
+    name: s.name,
+    rank: s.ranking || 0,
+    score: s.score || 0,
+    tags: s.tags || [],
+    location: s.province,
+    type: s.type,
+    level: s.level,
+    isPublic: s.isPublic
+  };
+});
+VOCATIONAL_COLLEGES = getSchoolsByLevel('专科').map(function(s) {
+  return {
+    name: s.name,
+    rank: s.vocRank || 0,
+    score: s.score || 0,
+    tags: s.tags || [],
+    location: s.province,
+    type: s.type,
+    level: s.level,
+    isPublic: s.isPublic,
+    shuanggaoLevel: s.shuanggaoLevel || ''
+  };
+});
+filteredColleges = [].concat(RANKINGS);
 
 // 双高计划层次排序权重：A档 > B档 > C档 > 国家示范 > 国家骨干 > 其他
 function getVocationalTierScore(college) {
@@ -32,14 +52,10 @@ function getVocationalTierScore(college) {
   return 0;
 }
 
-// 判断是否为专科院校（在VOCATIONAL_COLLEGES中）
+// 判断是否为专科院校（使用schools-db扩充数据）
 function isVocationalCollege(college) {
   if (!college || !college.name) return false;
-  var vocList = getVocationalRankings();
-  for (var vi = 0; vi < vocList.length; vi++) {
-    if (vocList[vi].name === college.name) return true;
-  }
-  return false;
+  return college.level === '专科';
 }
 
 // 获取专科院校的估算投档分（基于排名和层次）
@@ -48,7 +64,7 @@ function getVocationalScoreEstimate(college, batchLine) {
   var totalVoc = vocList.length;
   var tierScore = getVocationalTierScore(college);
   // 基于排名位置线性映射：排名越靠前，估算分越接近批次线
-  var rankRatio = 1 - (college.rank / totalVoc);
+  var rankRatio = 1 - ((college.vocRank || 0) / totalVoc);
   // 专科分数范围：批次线以下200分到批次线
   var est = batchLine - 200 + (rankRatio * 180) + (tierScore * 0.5);
   return Math.round(est);
@@ -56,8 +72,8 @@ function getVocationalScoreEstimate(college, batchLine) {
 
 // 判断是否为公办/民办专科院校
 function isVocationalPublic(college) {
-  if (!college || !college.type) return true; // 默认公办
-  return college.type.indexOf('民办') === -1;
+  if (!college || college.isPublic === undefined) return true; // 默认公办
+  return college.isPublic === true;
 }
 
 // ===== Favorites System (localStorage) =====
