@@ -3780,7 +3780,7 @@ function jxDoRecommend() {
     rowsHtml += '<tr class="tier-' + d.level + '">' +
       '<td style="font-weight:600;">' + item.num + '</td>' +
       '<td style="font-weight:600;text-align:left;cursor:pointer;color:#1a56db;" onclick="showCollegeDetail(\'' + escName + '\')">' + c.name + '</td>' +
-      '<td><span style="font-size:11px;color:#64748b;">' + c.location + '</span></td>' +
+      '<td><span style="font-size:11px;color:#64748b;">' + (c.province || c.location || '') + '</span></td>' +
       '<td>' + (c.type || '—') + '</td>' +
       '<td style="text-align:left;font-size:11px;">' + tagsHtml + '</td>' +
       '<td style="text-align:left;font-size:11px;max-width:140px;">' + majorNames + '</td>' +
@@ -3791,7 +3791,7 @@ function jxDoRecommend() {
       '<td style="font-weight:700;">' + Math.round(d.est) +
         (d.source === 'official' ? '<span title="2025年江西真实投档分" style="display:inline-block;margin-left:3px;padding:0 4px;border-radius:3px;font-size:10px;background:#fef3c7;color:#92400e;">实</span>' : '<span title="按层级估算" style="display:inline-block;margin-left:3px;padding:0 4px;border-radius:3px;font-size:10px;background:#e0e7ff;color:#3730a3;">估</span>') +
       '</td>' +
-      '<td>' + c.rank + '</td>' +
+      '<td>' + (c.ranking || c.rank || '') + '</td>' +
     '</tr>';
   }
 
@@ -4577,7 +4577,7 @@ function simDoRecommend() {
     rowsHtml += '<tr class="tier-' + d.level + '">' +
       '<td style="font-weight:600;">' + item.num + '</td>' +
       '<td style="font-weight:600;text-align:left;cursor:pointer;color:#1a56db;" onclick="showCollegeDetail(\'' + escName + '\')">' + c.name + '</td>' +
-      '<td><span style="font-size:11px;color:#64748b;">' + c.location + '</span></td>' +
+      '<td><span style="font-size:11px;color:#64748b;">' + (c.province || c.location || '') + '</span></td>' +
       '<td>' + (c.type || '—') + '</td>' +
       '<td style="text-align:left;font-size:11px;">' + tagsHtml + '</td>' +
       '<td style="text-align:left;font-size:11px;max-width:140px;">' + majorNames + '</td>' +
@@ -4586,7 +4586,7 @@ function simDoRecommend() {
       '<td style="font-weight:700;">' + Math.round(d.est) +
         (d.source === 'official' ? '<span style="display:inline-block;margin-left:3px;padding:0 4px;border-radius:3px;font-size:10px;background:#fef3c7;color:#92400e;">实</span>' : '<span style="display:inline-block;margin-left:3px;padding:0 4px;border-radius:3px;font-size:10px;background:#e0e7ff;color:#3730a3;">估</span>') +
       '</td>' +
-      '<td>' + c.rank + '</td>' +
+      '<td>' + (c.ranking || c.rank || '') + '</td>' +
     '</tr>';
   }
 
