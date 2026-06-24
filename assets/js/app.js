@@ -19,6 +19,117 @@ function getFavorites() {
   }
 }
 
+// ===================== VOCATIONAL COLLEGES PAGE =====================
+function renderVocationalList() {
+  var typeFilter = document.getElementById('voc-type-filter');
+  var locFilter = document.getElementById('voc-loc-filter');
+  var levelFilter = document.getElementById('voc-level-filter');
+  var searchInput = document.getElementById('voc-search');
+  
+  var list = [].concat(VOCATIONAL_COLLEGES || []);
+  
+  if (typeFilter && typeFilter.value) {
+    list = list.filter(function(c) { return c.type === typeFilter.value; });
+  }
+  if (locFilter && locFilter.value) {
+    list = list.filter(function(c) { return c.location === locFilter.value; });
+  }
+  if (levelFilter && levelFilter.value) {
+    list = list.filter(function(c) { return c.level === levelFilter.value; });
+  }
+  if (searchInput && searchInput.value.trim()) {
+    var q = searchInput.value.trim().toLowerCase();
+    list = list.filter(function(c) {
+      if (c.name.toLowerCase().indexOf(q) !== -1) return true;
+      if (c.location.toLowerCase().indexOf(q) !== -1) return true;
+      if (c.type.toLowerCase().indexOf(q) !== -1) return true;
+      if (c.level.toLowerCase().indexOf(q) !== -1) return true;
+      if (c.tags && c.tags.length > 0) {
+        for (var ti = 0; ti < c.tags.length; ti++) {
+          if (c.tags[ti].toLowerCase().indexOf(q) !== -1) return true;
+        }
+      }
+      return false;
+    });
+  }
+  
+  var grid = document.getElementById('voc-grid');
+  var count = document.getElementById('voc-count');
+  
+  if (count) count.textContent = '共 ' + list.length + ' 所高职院校';
+  
+  if (grid) {
+    if (list.length === 0) {
+      grid.innerHTML = '<div class="empty-state">' +
+        '<div class="empty-state-icon">🔍</div>' +
+        '<div class="empty-state-text">未找到匹配的高职院校，请调整筛选条件</div>' +
+      '</div>';
+      return;
+    }
+    
+    grid.innerHTML = list.map(function(c, i) {
+      var tagHtml = '';
+      if (c.tags && c.tags.length > 0) {
+        tagHtml = c.tags.map(function(t) {
+          var cls = 'tag-syl';
+          if (t.indexOf('A档') !== -1) cls = 'tag-985';
+          else if (t.indexOf('B档') !== -1) cls = 'tag-211';
+          else if (t.indexOf('职业本科') !== -1) cls = 'tag-985';
+          else if (t.indexOf('国家示范') !== -1) cls = 'tag-211';
+          return '<span class="college-tag ' + cls + '">' + t + '</span>';
+        }).join('');
+      }
+      
+      var levelBadge = '';
+      if (c.level === '高水平学校') {
+        levelBadge = '<span style="background:#e74c3c;color:#fff;padding:2px 6px;border-radius:3px;font-size:10px;margin-left:4px;">高水平学校</span>';
+      } else if (c.level === '高水平专业群') {
+        levelBadge = '<span style="background:#f39c12;color:#fff;padding:2px 6px;border-radius:3px;font-size:10px;margin-left:4px;">高水平专业群</span>';
+      }
+      
+      return '<div class="card college-card" style="cursor:default;">' +
+        '<div class="college-rank ' + (i < 3 ? 'top3' : '') + '">' + c.rank + '</div>' +
+        '<div class="college-info">' +
+          '<div class="college-name">' + c.name + levelBadge + '</div>' +
+          '<div class="college-tags">' + tagHtml + '</div>' +
+          '<div class="college-meta">' +
+            '<span>📍 ' + c.location + '</span>' +
+            '<span>🏷️ ' + c.type + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+  
+  // Populate filters
+  if (typeFilter && !typeFilter.dataset.populated) {
+    typeFilter.dataset.populated = 'true';
+    var types = [];
+    (VOCATIONAL_COLLEGES || []).forEach(function(c) {
+      if (types.indexOf(c.type) === -1) types.push(c.type);
+    });
+    types.sort();
+    types.forEach(function(t) {
+      var opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      typeFilter.appendChild(opt);
+    });
+  }
+  if (locFilter && !locFilter.dataset.populated) {
+    locFilter.dataset.populated = 'true';
+    var locs = [];
+    (VOCATIONAL_COLLEGES || []).forEach(function(c) {
+      if (locs.indexOf(c.location) === -1) locs.push(c.location);
+    });
+    locs.sort();
+    locs.forEach(function(l) {
+      var opt = document.createElement('option');
+      opt.value = l; opt.textContent = l;
+      locFilter.appendChild(opt);
+    });
+  }
+}
+
 function saveFavorites(list) {
   try {
     localStorage.setItem('gaokao_favorites', JSON.stringify(list));
@@ -684,6 +795,8 @@ function navigateTo(page) {
         setTimeout(renderVerifyPage, 100);
         return;
       
+      } else if (page === 'vocational') {
+        renderVocationalList();
       }
 }
 // Toast notification
