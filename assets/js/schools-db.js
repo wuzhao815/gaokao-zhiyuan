@@ -37,8 +37,10 @@ function searchSchools(keyword) {
     if (s.p.toLowerCase().indexOf(q) !== -1) return true;
     if (s.c.toLowerCase().indexOf(q) !== -1) return true;
     if (s.t.toLowerCase().indexOf(q) !== -1) return true;
-    // v18: also search tags
-    if (s.tg && s.tg.toLowerCase().indexOf(q) !== -1) return true;
+    // v18: also search tags (tg is array)
+    if (s.tg && s.tg.some) {
+      if (s.tg.some(function(t) { return t.toLowerCase().indexOf(q) !== -1; })) return true;
+    }
     return false;
   }).map(expandSchool);
 }
